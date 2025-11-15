@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logo生成與設計流程說明</title>
+    <style>
+        /* --- 全局樣式 --- */
+        :root {
+            --primary-color: #4a4e69;
+            --secondary-color: #9a8c98;
+            --background-color: #f2e9e4;
+            --card-background: #ffffff;
+            --text-color: #22223b;
+            --accent-color: #c9ada7;
+            --white-color: #fff;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Helvetica Neue', 'Microsoft JhengHei', 'PingFang TC', sans-serif;
+            margin: 0;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            margin-bottom: 2rem;
+            border-bottom: 3px solid var(--accent-color);
+            padding-bottom: 1rem;
+        }
+
+        h2 {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: var(--secondary-color);
+            font-weight: bold;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        /* --- 步驟區塊樣式 --- */
+        .step-section {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            /* ✨ 調整間距，讓第一步說明和卡片區塊更緊密 */
+            margin-bottom: 2rem; 
+            background-color: var(--white-color);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            align-items: center;
+        }
+        
+        /* ✨ 讓最後一個步驟區塊有較大的底部間距 */
+        .step-section:last-of-type {
+            margin-bottom: 4rem;
+        }
+
+        .step-image {
+            flex: 1;
+            min-width: 280px;
+        }
+
+        .step-image img {
+            width: 100%;
+            height: auto;
+            aspect-ratio: 1 / 1; 
+            object-fit: cover;
+            border-radius: 8px;
+            background-color: #e0e0e0;
+        }
+
+        .step-content {
+            flex: 2;
+            min-width: 300px;
+        }
+        
+        .step-content p {
+            font-size: 1.1rem;
+        }
+
+        /* --- ✨ 新增：卡片區塊獨立樣式 --- */
+        .card-block {
+            background-color: var(--white-color);
+            padding: 2rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 4rem; /* 和下一個步驟保持較大間距 */
+        }
+        
+        .card-block h3 {
+            text-align: center;
+            font-size: 1.8rem;
+            margin-top: 0;
+            margin-bottom: 2rem;
+        }
+
+        /* --- 卡片容器樣式 --- */
+        .card-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .card {
+            background-color: var(--card-background);
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-content {
+            flex-grow: 1;
+        }
+
+        .card h3 {
+            font-size: 1.4rem;
+            margin-top: 0;
+            margin-bottom: 1rem;
+            color: var(--text-color);
+        }
+
+        .card p {
+            margin: 0.5rem 0;
+            font-size: 0.95rem; /* 維持卡片內文字大小不變 */
+        }
+        
+        .card p strong {
+            color: var(--primary-color);
+        }
+
+        .copy-btn {
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            border: none;
+            padding: 0.75rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: bold;
+            margin-top: 1.5rem;
+            width: 100%;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        .copy-btn:hover {
+            background-color: var(--secondary-color);
+        }
+        
+        .copy-btn:active {
+            transform: scale(0.98);
+        }
+
+        .copy-btn.copied {
+            background-color: #28a745; /* 綠色，表示成功 */
+        }
+
+        /* --- 回到頂部按鈕 --- */
+        #toTopBtn {
+            display: none;
+            position: fixed;
+            bottom: 25px;
+            right: 25px;
+            z-index: 99;
+            border: none;
+            outline: none;
+            background-color: var(--primary-color);
+            color: var(--white-color);
+            cursor: pointer;
+            padding: 1rem;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            font-size: 1rem;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            transition: background-color 0.3s, opacity 0.3s;
+            line-height: 1;
+        }
+
+        #toTopBtn:hover {
+            background-color: var(--secondary-color);
+        }
+
+        /* --- 響應式設計 --- */
+        @media (max-width: 768px) {
+            .container {
+                padding: 1rem;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            h2 {
+                font-size: 1.5rem;
+            }
+            .step-section {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Logo生成與設計流程說明</h1>
+        </header>
+
+        <main>
+            <!-- 第一步：說明與圖片 -->
+            <section id="step1" class="step-section">
+                <div class="step-image">
+                    <img src="https://placehold.co/800x800/9a8c98/f2e9e4?text=Step+1" alt="第一步示意圖">
+                </div>
+                <div class="step-content">
+                    <h2>第一步：到ChatGPT貼上LOGO規劃</h2>
+                    <p>首先，前往 <a href="https://chatgpt.com" target="_blank">ChatGPT 官方網站</a>。從下方的品牌主題中選擇一個，點擊「複製提示詞」按鈕，然後將內容貼到ChatGPT中，請它為您生成Logo概念圖。</p>
+                </div>
+            </section>
+
+            <!-- ✨ 新增：獨立的卡片區塊 ✨ -->
+            <section class="card-block">
+                <h3>選擇一個 Logo 主題開始</h3>
+                <div class="card-container">
+                    <!-- 卡片 1 -->
+                    <div class="card">
+                        <div class="card-content">
+                            <h3>★星辰奶茶 Startea</h3>
+                            <p><strong>定位：</strong>夜晚系飲品、少女風格、宵夜族群</p>
+                            <p><strong>風格建議：</strong>夢幻、插畫、紫粉色系</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 2 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★山語烘焙 Bakery Hills</h3>
+                            <p><strong>定位：</strong>手作麵包、天然無添加</p>
+                            <p><strong>風格建議：</strong>自然感、手繪風、溫暖色系</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 3 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★喵喵咖啡 Meowffee</h3>
+                            <p><strong>定位：</strong>寵物友善咖啡店</p>
+                            <p><strong>風格建議：</strong>可愛風、插圖感、米白與棕色系</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 4 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★靜木香氛 MuteWood</h3>
+                            <p><strong>定位：</strong>室內香氛、森林系</p>
+                            <p><strong>風格建議：</strong>自然、簡約、有機色彩</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 5 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★日昇瑜伽 SunAsana</h3>
+                            <p><strong>定位：</strong>身心靈平衡、陽光風格</p>
+                            <p><strong>風格建議：</strong>溫暖光影、自然色系、圓形構圖</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 6 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★黑曜健身 BlackCore Gym</h3>
+                            <p><strong>定位：</strong>高強度訓練品牌</p>
+                            <p><strong>風格建議：</strong>黑金、力量感、粗體字</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 7 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★波波水療 Bobo Spa</h3>
+                            <p><strong>定位：</strong>溫泉按摩、美容護理</p>
+                            <p><strong>風格建議：</strong>柔和曲線、水波紋、藍白色調</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 8 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★拾光攝影 Shiguang Photo</h3>
+                            <p><strong>定位：</strong>婚禮與人像攝影品牌</p>
+                            <p><strong>風格建議：</strong>復古相機圖案、棕金色系、寫意風格</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 9 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★樂芽音樂中心 JoyBud Music</h3>
+                            <p><strong>定位：</strong>兒童音樂教育品牌</p>
+                            <p><strong>風格建議：</strong>明亮色塊、童趣感、手繪小圖案</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 10 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★森林學堂 Forest Class</h3>
+                            <p><strong>定位：</strong>自然教育、親子戶外課程</p>
+                            <p><strong>風格建議：</strong>插畫風、小動物圖樣、綠色系</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 11 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★毛毛診所 FurCare Clinic</h3>
+                            <p><strong>定位：</strong>寵物醫療與照護</p>
+                            <p><strong>風格建議：</strong>簡潔小狗/貓頭圖、清爽色調</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                    <!-- 卡片 12 -->
+                    <div class="card">
+                         <div class="card-content">
+                            <h3>★白鷺花園 Egret Garden</h3>
+                            <p><strong>定位：</strong>園藝景觀設計</p>
+                            <p><strong>風格建議：</strong>自然風、留白構圖、水彩感</p>
+                        </div>
+                        <button class="copy-btn">複製提示詞</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- 第二步 -->
+            <section id="step2" class="step-section">
+                <div class="step-image">
+                    <img src="https://placehold.co/800x800/c9ada7/4a4e69?text=Step+2" alt="第二步示意圖">
+                </div>
+                <div class="step-content">
+                    <h2>第二步：到Gemini將圖片改為黑白</h2>
+                    <p>當您從ChatGPT獲得滿意的Logo概念圖後，可以到 <a href="https://gemini.google.com/" target="_blank">Google Gemini 網站</a>。</p>
+                    <p>上傳您的Logo圖片，並輸入指令如：</p>
+                    <p><strong>第一種：</strong>請將圖片轉為黑白</p>
+                    <p><strong>第二種：</strong>請將這張圖片轉換為黑白向量風格，線條要清晰</p>
+                </div>
+            </section>
+
+            <!-- 第三步 -->
+            <section id="step3" class="step-section">
+                <div class="step-image">
+                    <img src="https://placehold.co/800x800/4a4e69/f2e9e4?text=Step+3" alt="第三步示意圖">
+                </div>
+                <div class="step-content">
+                    <h2>第三步：到illustrator進行影像描圖，並手動微調</h2>
+                    <p>最後一步是將黑白的Logo圖片匯入Adobe Illustrator。</p>
+                    <p>使用「<strong>影像描圖</strong>」功能，並選擇「<strong>黑白標誌</strong>」將點陣圖轉換為向量圖形。</p>
+                    <p>描圖完成後，需要手動調整錨點、平滑曲線、修正細節，並為Logo上色，使其達到最終完美的效果。</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- 回到頂部按鈕 -->
+    <button id="toTopBtn" title="回到頂部">Top</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // --- 複製提示詞功能 ---
+            const copyButtons = document.querySelectorAll('.copy-btn');
+
+            copyButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    const card = this.closest('.card');
+                    const contentToCopy = card.querySelector('.card-content').innerText;
+                    
+                    navigator.clipboard.writeText(contentToCopy).then(() => {
+                        // 成功複製後的操作
+                        const originalText = this.innerText;
+                        this.innerText = '已複製！';
+                        this.classList.add('copied');
+
+                        // 2秒後恢復原狀
+                        setTimeout(() => {
+                            this.innerText = originalText;
+                            this.classList.remove('copied');
+                        }, 2000);
+                    }).catch(err => {
+                        console.error('無法複製文字: ', err);
+                        alert('複製失敗，請手動複製。');
+                    });
+                });
+            });
+
+            // --- 回到頂部按鈕功能 ---
+            const toTopBtn = document.getElementById('toTopBtn');
+
+            // 監聽頁面滾動
+            window.onscroll = function() {
+                scrollFunction();
+            };
+
+            function scrollFunction() {
+                if (document.body.scrollTop > 100 || document.documentElement.scrollTop > 100) {
+                    toTopBtn.style.display = "block";
+                } else {
+                    toTopBtn.style.display = "none";
+                }
+            }
+
+            // 點擊按鈕回到頂部
+            toTopBtn.addEventListener('click', function() {
+                window.scrollTo({top: 0, behavior: 'smooth'});
+            });
+        });
+    </script>
+
+</body>
+</html>
